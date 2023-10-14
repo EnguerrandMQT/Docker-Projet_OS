@@ -1,30 +1,37 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le morpion pas si con</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <script src="/socket.io/socket.io.js"></script>
-
-</head>
-<body>
-    <div id="game">
-        <div id="board">
-            <div class="cell" id="cell-0"></div>
-            <div class="cell" id="cell-1"></div>
-            <div class="cell" id="cell-2"></div>
-            <div class="cell" id="cell-3"></div>
-            <div class="cell" id="cell-4"></div>
-            <div class="cell" id="cell-5"></div>
-            <div class="cell" id="cell-6"></div>
-            <div class="cell" id="cell-7"></div>
-            <div class="cell" id="cell-8"></div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Le morpion pas si con</title>
+        <link rel="stylesheet" href="../css/style.css" />
+        <script src="/socket.io/socket.io.js"></script>
+    </head>
+    <body>
+        <div id="game">
+            <div id="gameStats">
+                <div id="player1">--</div>
+                <div> VS </div>
+                <div id="player2">--</div>
+            </div>
+            <div id="board">
+                <div class="cell" id="0"></div>
+                <div class="cell" id="1"></div>
+                <div class="cell" id="2"></div>
+                <div class="cell" id="3"></div>
+                <div class="cell" id="4"></div>
+                <div class="cell" id="5"></div>
+                <div class="cell" id="6"></div>
+                <div class="cell" id="7"></div>
+                <div class="cell" id="8"></div>
+            </div>
         </div>
         <div id="status"></div>
-        <button id="restart">Recommencer</button>
+        <div id="interactButton">
+            <button id="restart" disabled>Recommencer</button>
+            <button id="quit">Quitter</button>
+        </div>
 
-
-    <script src="../js/game.js" type="module"></script>
-</body>
+        <script src="../js/game.js" type="module"></script>
+    </body>
 </html>

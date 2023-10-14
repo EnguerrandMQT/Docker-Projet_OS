@@ -1,0 +1,12 @@
+CREATE DATABASE IF NOT EXISTS proj_db;
+USE proj_db;
+
+DROP TABLE IF EXISTS players;
+CREATE TABLE IF NOT EXISTS players (
+  id VARCHAR(36) NOT NULL,
+  username varchar(45) DEFAULT NULL,
+  win INT DEFAULT NULL,
+  loss INT DEFAULT NULL,
+  draw INT DEFAULT NULL,
+  PRIMARY KEY (id)
+);
