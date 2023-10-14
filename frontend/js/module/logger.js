@@ -10,7 +10,7 @@ let logger = (function () {
             }),
         }).then((response) => {
             if (response.ok) {
-                window.location.href = "/";
+                window.location.href = "/home";
             } else {
                 response.json().then((data) => {
                     data.errors.forEach((error) => {

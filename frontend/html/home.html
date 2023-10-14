@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le morpion pas si con</title>
-</head>
-<body>
-    <!-- homepage displaying rooms and scoreboard -->
-    <div id="scoreboard">
-        
-    </div>
-    <div id="rooms">
-    </div>
-    
-</body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Le morpion pas si con</title>
+        <link rel="stylesheet" href="../css/style.css" />
+        <script src="/socket.io/socket.io.js"></script>
+    </head>
+    <body>
+        <!-- homepage displaying rooms and scoreboard -->
+        <div id="scoreboard">
+            <p>Coucou</p>
+        </div>
+        <button id="createRoom">Créer une partie</button>
+        <div id="rooms"></div>
+
+        <div class="ghost" id="homeDiv"></div>
+        <script src="../js/home.js" type="module"></script>
+    </body>
 </html>
