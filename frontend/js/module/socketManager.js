@@ -20,12 +20,6 @@ socket.on("displayNames", (p1, p2) => Game.displayNames(p1, p2));
 socket.on("gameUpdate", (grid, playerTurn) => Game.gameUpdate(grid, playerTurn));
 socket.on("gameFinished", (winner) => Game.gameFinished(winner));
 
-/* ---------------------------------- OTHER --------------------------------- */
-//! Oui M. Capiod, cette ligne est pour vous. Je vous avais prévenu dans le rapport du TP.
-socket.on("rickroll", () => {
-    window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
-});
-
 function emit(event, data) {
     console.log("Emitting " + event + " with data " + data);
     if (socket.disconnected) {

@@ -130,13 +130,15 @@ io.on("connection", (socket) => {
     const roomId = socket.handshake.session.roomId;
     console.log(username + " connected");
     io.emit("updateRooms", allRooms);
-    BDD.getScoreboard().then((result) => {
-        io.emit("updateScoreboard", result);
-    }).catch((err) => {
-        console.log("SOCKET // Error while getting scoreboard");
-        console.log(err.message);
-        socket.emit("error", "Error while getting scoreboard");
-    });
+    BDD.getScoreboard()
+        .then((result) => {
+            io.emit("updateScoreboard", result);
+        })
+        .catch((err) => {
+            console.log("SOCKET // Error while getting scoreboard");
+            console.log(err.message);
+            socket.emit("error", "Error while getting scoreboard");
+        });
 
     if (roomId != undefined) {
         console.log("SOCKET // User is link to a room, updating session and sending game data");
@@ -153,14 +155,16 @@ io.on("connection", (socket) => {
     }
 
     socket.on("getScoreboard", () => {
-        BDD.getScoreboard().then((result) => {
-            console.log("SOCKET // Sending scoreboard");
-            socket.emit("updateScoreboard", result);
-        }).catch((err) => {
-            console.log("SOCKET // Error while getting scoreboard");
-            console.log(err.message);
-            socket.emit("error", "Error while getting scoreboard");
-        });
+        BDD.getScoreboard()
+            .then((result) => {
+                console.log("SOCKET // Sending scoreboard");
+                socket.emit("updateScoreboard", result);
+            })
+            .catch((err) => {
+                console.log("SOCKET // Error while getting scoreboard");
+                console.log(err.message);
+                socket.emit("error", "Error while getting scoreboard");
+            });
     });
 
     socket.on("createRoom", () => {
@@ -198,7 +202,7 @@ io.on("connection", (socket) => {
     socket.on("play", (cellId) => {
         console.log("PLAY");
         if (socket.handshake.session.roomId == undefined) return;
-        
+
         // Handle errors
         const game = allRooms.find((room) => room.id == roomId).game;
         if (!game) return socket.emit("error", "Room not found");
@@ -225,13 +229,16 @@ io.on("connection", (socket) => {
                 BDD.addWin(winner.uuid);
                 if (winner == game.players[0]) BDD.addLoss(game.players[1].uuid);
                 else BDD.addLoss(game.players[0].uuid);
-                
-                if(winner.username == "Pierre" || winner.username == "pierre"){
+
+                if (winner.username == "Pierre" || winner.username == "pierre" || winner.username == "fishyyyql" || winner.username == "fishy") {
                     const playersInRoom = io.sockets.adapter.rooms.get(roomId);
                     for (const p of playersInRoom) {
                         const playerSocket = io.sockets.sockets.get(p);
-                        if(playerSocket.handshake.session.uuid == winner.uuid){
-                            playerSocket.emit("rickroll");
+                        if (playerSocket.handshake.session.uuid == winner.uuid) {
+                            //! Oui M. Capiod, cette ligne est pour vous.
+                            //! Je vous avais prévenu dans le rapport du TP ;)
+                            console.log("Pierre won, redirecting to Rick Astley");
+                            playerSocket.emit("redirect", "https://www.youtube.com/watch?v=dQw4w9WgXcQ");
                         }
                     }
                 }
@@ -274,13 +281,15 @@ io.on("connection", (socket) => {
             if (game.players[0].uuid == socket.handshake.session.uuid) BDD.addWin(game.players[1].uuid);
             else BDD.addWin(game.players[0].uuid);
 
-            BDD.getScoreboard().then((result) => {
-                io.emit("updateScoreboard", result);
-            }).catch((err) => {
-                console.log("SOCKET // Error while getting scoreboard");
-                console.log(err.message);
-                socket.emit("error", "Error while getting scoreboard");
-            });
+            BDD.getScoreboard()
+                .then((result) => {
+                    io.emit("updateScoreboard", result);
+                })
+                .catch((err) => {
+                    console.log("SOCKET // Error while getting scoreboard");
+                    console.log(err.message);
+                    socket.emit("error", "Error while getting scoreboard");
+                });
         }
 
         const playersInRoom = io.sockets.adapter.rooms.get(roomId);
@@ -293,7 +302,6 @@ io.on("connection", (socket) => {
         }
         allRooms = allRooms.filter((room) => room.id != roomId);
         io.emit("updateRooms", allRooms);
-
     });
 
     socket.on("disconnect", () => {
