@@ -2,18 +2,19 @@ import SocketManager from "./module/socketManager.js";
 
 const cells = document.querySelectorAll(".cell");
 const restart = document.getElementById("restart");
+console.log("restart : ", restart);
 const quit = document.getElementById("quit");
 
 const inPage = document.getElementById("gameDiv") == null ? false : true;
 console.log("inPage : ", inPage);
 if (inPage) {
-    console.log("Game.js");
-
     cells.forEach((cell) => {
         cell.addEventListener("click", handleClick);
     });
 
+    console.log("Game.js");
     restart.addEventListener("click", () => {
+        console.log("restart");
         SocketManager.emit("restart");
     });
 
@@ -42,7 +43,7 @@ function gameUpdate(grid, playerTurn) {
     for (let i = 0; i < 9; i++) {
         cells[i].innerHTML = grid[i] == undefined ? "" : grid[i];
     }
-    document.getElementById("status").innerHTML = playerTurn + "'s turn";
+    document.getElementById("status").innerHTML = "C'est à <b>" + playerTurn + "</b> de jouer";
 }
 
 function gameFinished(winner) {

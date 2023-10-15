@@ -13,17 +13,21 @@ socket.on("error", (error) => {
 
 /* ---------------------------------- HOME ---------------------------------- */
 socket.on("updateRooms", (rooms) => Home.updateRooms(rooms));
-socket.on("updateScoreboard", (scores) => Home.updateScoreboard(scores));
+socket.on("updateScoreboard", (players) => Home.updateScoreboard(players));
 
 /* ---------------------------------- GAME ---------------------------------- */
 socket.on("displayNames", (p1, p2) => Game.displayNames(p1, p2));
 socket.on("gameUpdate", (grid, playerTurn) => Game.gameUpdate(grid, playerTurn));
 socket.on("gameFinished", (winner) => Game.gameFinished(winner));
 
+/* ---------------------------------- OTHER --------------------------------- */
+//! Oui M. Capiod, cette ligne est pour vous. Je vous avais prévenu dans le rapport du TP.
+socket.on("rickroll", () => {
+    window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+});
 
 function emit(event, data) {
     console.log("Emitting " + event + " with data " + data);
-    // check if socket is connected
     if (socket.disconnected) {
         console.error("Socket is disconnected");
         return;

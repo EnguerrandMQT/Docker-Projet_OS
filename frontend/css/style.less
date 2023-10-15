@@ -1,13 +1,150 @@
+@primary-color: #4f5d75ff;
+@secondary-color: #bfc0c0ff;
+@text-color: #ffffffff;
+@text-color-secondary: #ef8354ff;
+@background-color: #2d3142ff;
+
 body {
-    background-color: black;
+    background-color: @background-color;
     padding: 20px;
     margin: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 10px #ccc;
+    box-shadow: 0 0 10px @secondary-color;
     text-align: center;
     font-family: "Roboto", sans-serif;
-    font-size: 20px;
-    color: white;
+    font-size: 1.3rem;
+    color: @text-color-secondary;
+
+    cursor: crosshair;
+}
+
+h1 {
+    color: @text-color;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+h2 {
+    color: @text-color-secondary;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.ghost {
+    display: none;
+    visibility: hidden;
+}
+
+button {
+    width: 40%;
+    height: 50px;
+    border-radius: 10px;
+    background-color: @secondary-color;
+    color: @primary-color;
+    font-weight: bold;
+    font-size: 1.3rem;
+
+    &:hover {
+        cursor: cell;
+        background-color: @primary-color;
+        color: @secondary-color;
+    }
+}
+
+#login {
+    #loginForm {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+
+        #username {
+            width: 50%;
+            height: 50px;
+            border-radius: 10px;
+            border: none;
+            margin-bottom: 10px;
+            padding: 0 10px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            background-color: @secondary-color;
+            color: @primary-color;
+        }
+
+    }
+    #error {
+        color: red;
+        font-weight: bold;
+    }
+}
+
+#home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+
+    #scoreboard {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+
+        h1, h2{
+            margin: 10px;
+        }
+
+        #scoreboardContent {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-around;
+            width: 100%;
+            color: @secondary-color;
+            font-size: 1.3rem;
+            padding: 0 10px;
+            text-align: left;
+        }
+    }
+
+    #createRoom {
+        margin: 10px;
+        width: 60%;
+        height: 50px;
+
+    }
+
+    #rooms {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+
+        #roomsContent {
+            width: 70%;
+            font-size: 1.3rem;
+            
+            div{
+                color: @secondary-color;
+                background-color: @primary-color;
+                border: 1px solid @secondary-color;
+                border-radius: 10px ;
+                margin: 5px;
+                padding: 5px;
+
+                &:hover{
+                    cursor: cell;
+                    background-color: @secondary-color;
+                    color: @primary-color;
+                }
+            }
+        }
+    }
 }
 
 #game {
@@ -17,11 +154,17 @@ body {
     justify-content: center;
 
     #gameStats {
-        display: flex;
-        flex-direction: row;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
         align-items: center;
-        justify-content: space-around;
+        text-align: center;
         width: 100%;
+        h2{
+            font-weight: normal;
+            &#vs {
+                font-weight: bold;
+            }
+        }
     }
 
     #board {
@@ -30,18 +173,45 @@ body {
         grid-template-columns: repeat(3, 1fr);
         grid-gap: 10px;
 
-        div {
-            background-color: #ccc;
+        .cell {
+            cursor: cell;
+            background-color: @secondary-color;
+            box-shadow: 0 0 10px @secondary-color;
             width: 100px;
             height: 100px;
             border-radius: 10px;
-            box-shadow: 0 0 10px #ccc;
-            font-size: 50px;
-            cursor: pointer;
 
-            :hover {
-                background-color: #ddd;
+            font-size: 40px;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            font-weight: bold;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            &:hover {
+                background-color: @text-color-secondary;
+                color: @secondary-color;
             }
+        }
+    }
+
+    #status {
+        margin: 15px;
+        font-size: 1.3rem;
+        font-weight: normal;
+        color: @text-color;
+    }
+
+    #interactButton{
+        width: 60%;
+        height: 50px;
+
+        button[disabled]{
+            cursor: crosshair;
+            background-color: darken(@secondary-color, 30%);
+            color: darken(@primary-color, 30%);
         }
     }
 }

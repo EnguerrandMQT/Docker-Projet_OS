@@ -8,12 +8,18 @@
         <script src="/socket.io/socket.io.js"></script>
     </head>
     <body>
-        <!-- homepage displaying rooms and scoreboard -->
-        <div id="scoreboard">
-            <p>Coucou</p>
+        <div id="home">
+            <!-- homepage displaying rooms and scoreboard -->
+            <div id="scoreboard">
+                <h1>Meilleurs 3 joueurs</h1>
+                <div id="scoreboardContent"></div>
+            </div>
+            <button id="createRoom">Créer une partie</button>
+            <div id="rooms">
+                <h1>Parties en cours</h1>
+                <div id="roomsContent"></div>
+            </div>
         </div>
-        <button id="createRoom">Créer une partie</button>
-        <div id="rooms"></div>
 
         <div class="ghost" id="homeDiv"></div>
         <script src="../js/home.js" type="module"></script>

@@ -13,7 +13,7 @@ module.exports = class BDD {
             console.log("DB connected!");
         });
     }
-    // create a new player in the database with the given uuid and username and set his wins, losses and draws to 0
+
     async createPlayer(uuid, username) {
         return new Promise((resolve, reject) => {
             const query = "INSERT INTO players (id, username, win, loss, draw) VALUES (?, ?, 0, 0, 0)";
@@ -96,6 +96,19 @@ module.exports = class BDD {
                 if (err) reject(err);
                 else {
                     if (result && result.length > 0) resolve(result[0]);
+                    else resolve(null);
+                }
+            });
+        });
+    }
+
+    async getScoreboard() {
+        return new Promise((resolve, reject) => {
+            const query = "SELECT * FROM players ORDER BY win DESC LIMIT 3";
+            this.con.query(query, function (err, result) {
+                if (err) reject(err);
+                else {
+                    if (result && result.length > 0) resolve(result);
                     else resolve(null);
                 }
             });

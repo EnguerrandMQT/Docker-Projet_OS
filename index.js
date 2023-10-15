@@ -3,7 +3,6 @@ const app = express();
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const session = require("express-session")({
-    // CIR2-chat encode in sha256
     secret: "eb8fcc253281389225b4f7872f2336918ddc7f689e1fc41b64d5c4f378cdc438",
     resave: true,
     saveUninitialized: true,
@@ -20,23 +19,19 @@ const Morpion = require("./backend/game.js");
 const bdd = require("./backend/db/bdd.js");
 const BDD = new bdd();
 
-/**** Project configuration ****/
-
 const jsonParser = bodyParser.json();
 
-// Init of express, to point our assets
 app.use(express.static(__dirname + "/frontend/"));
 app.use(session);
 app.use(jsonParser);
 
 io.use(
     sharedsession(session, {
-        // Session automatically change if changement
         autoSave: true,
     })
 );
 
-// Routes
+/* --------------------------------- ROUTES --------------------------------- */
 
 // login page
 app.get("/", (req, res) => {
@@ -56,7 +51,6 @@ app.get("/game", (req, res) => {
     else res.sendFile(__dirname + "/frontend/html/game.html");
 });
 
-// check if the username is not undefined or null or NaN or false or true
 const isUsernameAuthorized = (value) => {
     if (value == undefined || value == null || value == false || value == true) {
         throw new Error("Username is not authorized");
@@ -87,7 +81,6 @@ app.post(
                 errors: errors.array(),
             });
         } else {
-            // Store login
             req.session.username = login;
             req.session.uuid = uuid.v4();
             req.session.save();
@@ -123,14 +116,12 @@ app.post(
 
 /* --------------------------------- SOCKET --------------------------------- */
 let allRooms = [];
-//let allGames = [];
 let idCounter = 0;
 
 io.on("connection", (socket) => {
     const username = socket.handshake.session.username;
     const uuid = socket.handshake.session.uuid;
-    
-    
+
     if (username == undefined || uuid == undefined) {
         console.log("SOCKET // User  not logged in, redirecting to login page");
         socket.emit("redirect", "/");
@@ -139,7 +130,14 @@ io.on("connection", (socket) => {
     const roomId = socket.handshake.session.roomId;
     console.log(username + " connected");
     io.emit("updateRooms", allRooms);
-    
+    BDD.getScoreboard().then((result) => {
+        io.emit("updateScoreboard", result);
+    }).catch((err) => {
+        console.log("SOCKET // Error while getting scoreboard");
+        console.log(err.message);
+        socket.emit("error", "Error while getting scoreboard");
+    });
+
     if (roomId != undefined) {
         console.log("SOCKET // User is link to a room, updating session and sending game data");
         socket.join(roomId);
@@ -153,6 +151,34 @@ io.on("connection", (socket) => {
             io.to(roomId).emit("gameUpdate", game.getGrid(), game.getPlayerTurn().username);
         }
     }
+
+    socket.on("getScoreboard", () => {
+        BDD.getScoreboard().then((result) => {
+            console.log("SOCKET // Sending scoreboard");
+            socket.emit("updateScoreboard", result);
+        }).catch((err) => {
+            console.log("SOCKET // Error while getting scoreboard");
+            console.log(err.message);
+            socket.emit("error", "Error while getting scoreboard");
+        });
+    });
+
+    socket.on("createRoom", () => {
+        console.log("CREATE ROOM");
+        socket.handshake.session.roomId = idCounter;
+        let newGame = new Morpion(idCounter);
+        newGame.addPlayer({ username, uuid });
+        let newRoom = {
+            id: idCounter,
+            players: [uuid],
+            game: newGame,
+        };
+        allRooms.push(newRoom);
+        socket.emit("redirect", "/game");
+
+        io.emit("updateRooms", allRooms);
+        idCounter++;
+    });
 
     socket.on("joinRoom", (roomId) => {
         console.log("JOIN ROOM");
@@ -169,28 +195,11 @@ io.on("connection", (socket) => {
         socket.emit("redirect", "/game");
     });
 
-    socket.on("createRoom", () => {
-        console.log("CREATE ROOM");
-        socket.handshake.session.roomId = idCounter;
-        let newGame = new Morpion(idCounter);
-        newGame.addPlayer({ username, uuid });
-        let newRoom = {
-            id: idCounter,
-            players: [uuid],
-            game: newGame,
-        };
-        allRooms.push(newRoom);
-        socket.emit("redirect", "/game");
-        
-        io.emit("updateRooms", allRooms);
-        idCounter++;
-    });
-
     socket.on("play", (cellId) => {
         console.log("PLAY");
         if (socket.handshake.session.roomId == undefined) return;
+        
         // Handle errors
-
         const game = allRooms.find((room) => room.id == roomId).game;
         if (!game) return socket.emit("error", "Room not found");
         if (game.getNbPlayers() != 2) return socket.emit("error", "Not enough players");
@@ -214,9 +223,18 @@ io.on("connection", (socket) => {
                 io.to(roomId).emit("gameUpdate", game.getGrid());
                 io.to(roomId).emit("gameFinished", winner.username);
                 BDD.addWin(winner.uuid);
-                // add loss to the other player
                 if (winner == game.players[0]) BDD.addLoss(game.players[1].uuid);
                 else BDD.addLoss(game.players[0].uuid);
+                
+                if(winner.username == "Pierre" || winner.username == "pierre"){
+                    const playersInRoom = io.sockets.adapter.rooms.get(roomId);
+                    for (const p of playersInRoom) {
+                        const playerSocket = io.sockets.sockets.get(p);
+                        if(playerSocket.handshake.session.uuid == winner.uuid){
+                            playerSocket.emit("rickroll");
+                        }
+                    }
+                }
             }
             return;
         }
@@ -225,6 +243,7 @@ io.on("connection", (socket) => {
 
     socket.on("restart", () => {
         console.log("RESTART");
+        console.log(socket.handshake.session.roomId);
         if (socket.handshake.session.roomId == undefined) return;
         const roomId = socket.handshake.session.roomId;
 
@@ -240,32 +259,42 @@ io.on("connection", (socket) => {
         io.to(roomId).emit("gameUpdate", game.getGrid(), game.getPlayerTurn().username);
     });
 
-    // socket.on("quit", () => {
-    //     console.log("QUIT");
-    //     if (socket.handshake.session.roomId == undefined) return;
-    //     const roomId = socket.handshake.session.roomId;
+    socket.on("quit", () => {
+        console.log("QUIT");
+        if (socket.handshake.session.roomId == undefined) return;
+        const roomId = socket.handshake.session.roomId;
 
-    //     // Handle errors
-    //     const game = allGames.find((game) => game.roomId == roomId);
-    //     if (!game) return socket.emit("error", "Room not found");
+        // Handle errors
+        const game = allRooms.find((room) => room.id == roomId)?.game;
+        if (!game) return socket.emit("error", "Room not found");
 
-    //     // Quit
-    //     console.log(username + " quit the game");
-    //     if(game.getNbPlayers() == 2){
-    //         BDD.addLoss(socket.handshake.session.uuid);
-    //         //add win to the other player
-    //         if(game.getPlayerTurn().uuid == socket.handshake.session.uuid) BDD.addWin(game.players[1].uuid);
-    //         else BDD.addWin(game.players[0].uuid);
-    //     } else {
+        if (!game.isFinished() && game.getGrid().some((cell) => cell != undefined)) {
+            console.log("Adding loss to " + username, socket.handshake.session.uuid);
+            BDD.addLoss(socket.handshake.session.uuid);
+            if (game.players[0].uuid == socket.handshake.session.uuid) BDD.addWin(game.players[1].uuid);
+            else BDD.addWin(game.players[0].uuid);
 
-    //     }
-    //     socket.leave(roomId);
-    //     socket.handshake.session.roomId = undefined;
-    //     socket.handshake.session.save();
+            BDD.getScoreboard().then((result) => {
+                io.emit("updateScoreboard", result);
+            }).catch((err) => {
+                console.log("SOCKET // Error while getting scoreboard");
+                console.log(err.message);
+                socket.emit("error", "Error while getting scoreboard");
+            });
+        }
 
-    //     io.to(roomId).emit("gameFinished", game.getPlayerTurn().username == username ? game.players[1].username : game.players[0].username);
-    //     BDD.addLoss(game.getPlayerTurn().uuid);
-    // });
+        const playersInRoom = io.sockets.adapter.rooms.get(roomId);
+        for (const p of playersInRoom) {
+            const playerSocket = io.sockets.sockets.get(p);
+            playerSocket.handshake.session.roomId = undefined;
+            playerSocket.handshake.session.save();
+            playerSocket.leave(roomId);
+            playerSocket.emit("redirect", "/home");
+        }
+        allRooms = allRooms.filter((room) => room.id != roomId);
+        io.emit("updateRooms", allRooms);
+
+    });
 
     socket.on("disconnect", () => {
         console.log(username + " disconnected");

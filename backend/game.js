@@ -8,6 +8,7 @@ module.exports = class Morpion{
             this.cells.push(undefined);
         }
     }
+
     addPlayer(playerInfo){
         this.players.push(playerInfo);
     }
@@ -20,17 +21,19 @@ module.exports = class Morpion{
         return this.players.length;
     }
 
+    getPlayerByUuid(uuid){
+        return this.players.find((player) => player.uuid == uuid);
+    }
+
+    getPlayerByUsername(username){
+        return this.players.find((player) => player.username == username);
+    }
+
     isCellEmpty(cellId){
         return this.cells[cellId] == undefined;
     }
 
-    // the array could look like this:
-    // [x, o, x,
-    //  o, x, o,
-    //  x, undefined, undefined ]
-    // return the winner if there is one, undefined otherwise
     isFinished(){
-        // check if there is a winner
         // check horizontal
         for(let i = 0; i < 9; i += 3){
             if(this.cells[i] != undefined && this.cells[i] == this.cells[i + 1] && this.cells[i] == this.cells[i + 2]){
@@ -50,7 +53,7 @@ module.exports = class Morpion{
         if(this.cells[2] != undefined && this.cells[2] == this.cells[4] && this.cells[2] == this.cells[6]){
             return this.cells[2] == "x" ? this.players[0]: this.players[1];
         }
-        // check if the grid is full
+        // check if full grid
         for(let i = 0; i < 9; i++){
             if(this.cells[i] == undefined) return undefined;
         }
@@ -79,5 +82,10 @@ module.exports = class Morpion{
         return this.cells;
     }
 
-    
+    isGridEmpty(){
+        for(let i = 0; i < 9; i++){
+            if(this.cells[i] != undefined) return false;
+        }
+        return true;
+    }
 }

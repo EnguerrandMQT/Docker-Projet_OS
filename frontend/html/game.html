@@ -5,14 +5,17 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Le morpion pas si con</title>
         <link rel="stylesheet" href="../css/style.css" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Orbitron">
+
         <script src="/socket.io/socket.io.js"></script>
     </head>
     <body>
         <div id="game">
+            <h1>Que le meilleur gagne !</h1>
             <div id="gameStats">
-                <div id="player1">-</div>
-                <div> VS </div>
-                <div id="player2">-</div>
+                <h2 id="player1">-</h2>
+                <h2 id="vs"> VS </h2>
+                <h2 id="player2">-</h2>
             </div>
             <div id="board">
                 <div class="cell" id="0"></div>
@@ -25,11 +28,11 @@
                 <div class="cell" id="7"></div>
                 <div class="cell" id="8"></div>
             </div>
-        </div>
-        <div id="status"></div>
-        <div id="interactButton">
-            <button id="restart" disabled>Recommencer</button>
-            <button id="quit">Quitter</button>
+            <div id="status"></div>
+            <div id="interactButton">
+                <button id="restart">Recommencer</button>
+                <button id="quit">Quitter</button>
+            </div>
         </div>
         <div class="ghost" id="gameDiv"></div>
 

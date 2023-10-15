@@ -1,13 +1,124 @@
 body {
-  background-color: black;
+  background-color: #2d3142ff;
   padding: 20px;
   margin: 20px;
   border-radius: 10px;
-  box-shadow: 0 0 10px #ccc;
+  box-shadow: 0 0 10px #bfc0c0ff;
   text-align: center;
   font-family: "Roboto", sans-serif;
-  font-size: 20px;
-  color: white;
+  font-size: 1.3rem;
+  color: #ef8354ff;
+  cursor: crosshair;
+}
+h1 {
+  color: #ffffffff;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+h2 {
+  color: #ef8354ff;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+.ghost {
+  display: none;
+  visibility: hidden;
+}
+button {
+  width: 40%;
+  height: 50px;
+  border-radius: 10px;
+  background-color: #bfc0c0ff;
+  color: #4f5d75ff;
+  font-weight: bold;
+  font-size: 1.3rem;
+}
+button:hover {
+  cursor: cell;
+  background-color: #4f5d75ff;
+  color: #bfc0c0ff;
+}
+#login #loginForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+#login #loginForm #username {
+  width: 50%;
+  height: 50px;
+  border-radius: 10px;
+  border: none;
+  margin-bottom: 10px;
+  padding: 0 10px;
+  font-size: 1.3rem;
+  font-weight: bold;
+  background-color: #bfc0c0ff;
+  color: #4f5d75ff;
+}
+#login #error {
+  color: red;
+  font-weight: bold;
+}
+#home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+#home #scoreboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+#home #scoreboard h1,
+#home #scoreboard h2 {
+  margin: 10px;
+}
+#home #scoreboard #scoreboardContent {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  color: #bfc0c0ff;
+  font-size: 1.3rem;
+  padding: 0 10px;
+  text-align: left;
+}
+#home #createRoom {
+  margin: 10px;
+  width: 60%;
+  height: 50px;
+}
+#home #rooms {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+#home #rooms #roomsContent {
+  width: 70%;
+  font-size: 1.3rem;
+}
+#home #rooms #roomsContent div {
+  color: #bfc0c0ff;
+  background-color: #4f5d75ff;
+  border: 1px solid #bfc0c0ff;
+  border-radius: 10px ;
+  margin: 5px;
+  padding: 5px;
+}
+#home #rooms #roomsContent div:hover {
+  cursor: cell;
+  background-color: #bfc0c0ff;
+  color: #4f5d75ff;
 }
 #game {
   display: flex;
@@ -16,11 +127,17 @@ body {
   justify-content: center;
 }
 #game #gameStats {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-around;
+  text-align: center;
   width: 100%;
+}
+#game #gameStats h2 {
+  font-weight: normal;
+}
+#game #gameStats h2#vs {
+  font-weight: bold;
 }
 #game #board {
   display: grid;
@@ -28,15 +145,37 @@ body {
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 10px;
 }
-#game #board div {
-  background-color: #ccc;
+#game #board .cell {
+  cursor: cell;
+  background-color: #bfc0c0ff;
+  box-shadow: 0 0 10px #bfc0c0ff;
   width: 100px;
   height: 100px;
   border-radius: 10px;
-  box-shadow: 0 0 10px #ccc;
-  font-size: 50px;
-  cursor: pointer;
+  font-size: 40px;
+  font-family: 'Orbitron', sans-serif;
+  text-transform: uppercase;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-#game #board div :hover {
-  background-color: #ddd;
+#game #board .cell:hover {
+  background-color: #ef8354ff;
+  color: #bfc0c0ff;
+}
+#game #status {
+  margin: 15px;
+  font-size: 1.3rem;
+  font-weight: normal;
+  color: #ffffffff;
+}
+#game #interactButton {
+  width: 60%;
+  height: 50px;
+}
+#game #interactButton button[disabled] {
+  cursor: crosshair;
+  background-color: #727474;
+  color: #11141a;
 }
